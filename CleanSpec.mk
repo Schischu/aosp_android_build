@@ -29,7 +29,7 @@
 # Use $(OUT_DIR) to refer to the "out" directory.
 #
 # If you need to re-do something that's already mentioned, just copy
-# the command and add it to the bottom of the list.  E.g., if a change
+# the command and add it to the bottom Fof the list.  E.g., if a change
 # that you made last week required touching a file and a change you
 # made today requires touching the same file, just copy the old
 # touch step and add it to the end of the list.
