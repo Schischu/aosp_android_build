@@ -159,7 +159,7 @@ include $(BUILD_SYSTEM)/envsetup.mk
 
 # Pruned directory options used when using findleaves.py
 # See envsetup.mk for a description of SCAN_EXCLUDE_DIRS
-FIND_LEAVES_EXCLUDES := $(addprefix --prune=, $(OUT_DIR) $(SCAN_EXCLUDE_DIRS) .repo .git)
+FIND_LEAVES_EXCLUDES := $(addprefix --prune=, $(OUT_DIR) $(SCAN_EXCLUDE_DIRS) .repo .git .org)
 
 # The build system exposes several variables for where to find the kernel
 # headers:
@@ -408,6 +408,9 @@ else
 MKBOOTIMG := $(BOARD_CUSTOM_MKBOOTIMG)
 endif
 APICHECK := $(HOST_OUT_EXECUTABLES)/apicheck$(HOST_EXECUTABLE_SUFFIX)
+#+++>
+MKIMAGE :=  $(HOST_OUT_EXECUTABLES)/mkimage$(HOST_EXECUTABLE_SUFFIX)
+#--->
 FS_GET_STATS := $(HOST_OUT_EXECUTABLES)/fs_get_stats$(HOST_EXECUTABLE_SUFFIX)
 MAKE_EXT4FS := $(HOST_OUT_EXECUTABLES)/make_ext4fs$(HOST_EXECUTABLE_SUFFIX)
 MKEXTUSERIMG := $(HOST_OUT_EXECUTABLES)/mkuserimg.sh
