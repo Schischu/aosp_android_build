@@ -414,7 +414,7 @@ def AppendAssertions(script, info_dict, oem_dict=None):
   oem_props = info_dict.get("oem_fingerprint_properties")
   if oem_props is None or len(oem_props) == 0:
     device = GetBuildProp("ro.product.device", info_dict)
-    script.AssertDevice(device)
+    script.AssertDevice("lt03ltexx")
   else:
     if oem_dict is None:
       raise common.ExternalError(
@@ -922,9 +922,9 @@ else
 """ % bcb_dev)
 
   # Verify the existing partitions.
-  system_diff.WriteVerifyScript(script)
-  if vendor_diff:
-    vendor_diff.WriteVerifyScript(script)
+  #system_diff.WriteVerifyScript(script)
+  #if vendor_diff:
+  #  vendor_diff.WriteVerifyScript(script)
 
   script.Comment("---- start making changes here ----")
 

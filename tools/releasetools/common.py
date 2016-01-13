@@ -308,6 +308,8 @@ def BuildBootableImage(sourcedir, fs_config_file, info_dict=None):
   data, or None if sourcedir does not appear to contains files for
   building the requested image."""
 
+  print "BuildBootableImage ->"
+
   if (not os.access(os.path.join(sourcedir, "RAMDISK"), os.F_OK) or
       not os.access(os.path.join(sourcedir, "kernel"), os.F_OK)):
     return None
@@ -325,6 +327,9 @@ def BuildBootableImage(sourcedir, fs_config_file, info_dict=None):
   p1 = Run(cmd, stdout=subprocess.PIPE)
   p2 = Run(["minigzip"],
            stdin=p1.stdout, stdout=ramdisk_img.file.fileno())
+
+  print "p1", cmd
+  print "p2", " | minigzip > ", ramdisk_img
 
   p2.wait()
   p1.wait()
@@ -351,10 +356,39 @@ def BuildBootableImage(sourcedir, fs_config_file, info_dict=None):
     cmd.append("--base")
     cmd.append(open(fn).read().rstrip("\n"))
 
+  #+++>
+  fn = os.path.join(sourcedir, "tagsaddr")
+  if os.access(fn, os.F_OK):
+    cmd.append("--tags-addr")
+    cmd.append(open(fn).read().rstrip("\n"))
+
+  fn = os.path.join(sourcedir, "tags_offset")
+  if os.access(fn, os.F_OK):
+    cmd.append("--tags_offset")
+    cmd.append(open(fn).read().rstrip("\n"))
+
+  fn = os.path.join(sourcedir, "ramdisk_offset")
+  if os.access(fn, os.F_OK):
+    cmd.append("--ramdisk_offset")
+    cmd.append(open(fn).read().rstrip("\n"))
+
+  fn = os.path.join(sourcedir, "dt")
+  if os.access(fn, os.F_OK):
+    cmd.append("--dt")
+    cmd.append(fn)
+  #--->
+
   fn = os.path.join(sourcedir, "pagesize")
   if os.access(fn, os.F_OK):
+    #+++>
+    kernel_pagesize=open(fn).read().rstrip("\n")
+	#--->
     cmd.append("--pagesize")
-    cmd.append(open(fn).read().rstrip("\n"))
+	#+++>
+    cmd.append(kernel_pagesize)
+	#===>
+	#cmd.append(open(fn).read().rstrip("\n"))
+	#--->
 
   args = info_dict.get("mkbootimg_args", None)
   if args and args.strip():
@@ -369,6 +403,7 @@ def BuildBootableImage(sourcedir, fs_config_file, info_dict=None):
     cmd.extend(["--ramdisk", ramdisk_img.name,
                 "--output", img.name])
 
+  print "cmd", cmd
   p = Run(cmd, stdout=subprocess.PIPE)
   p.communicate()
   assert p.returncode == 0, "mkbootimg of %s image failed" % (
@@ -382,6 +417,8 @@ def BuildBootableImage(sourcedir, fs_config_file, info_dict=None):
     cmd.extend([path, img.name,
                 info_dict["verity_key"] + ".pk8",
                 info_dict["verity_key"] + ".x509.pem", img.name])
+	
+    print "cmd_verify_key", cmd
     p = Run(cmd, stdout=subprocess.PIPE)
     p.communicate()
     assert p.returncode == 0, "boot_signer of %s image failed" % path
@@ -396,6 +433,7 @@ def BuildBootableImage(sourcedir, fs_config_file, info_dict=None):
            info_dict["vboot_subkey"] + ".vbprivk",
            img_keyblock.name,
            img.name]
+    print "cmd_vboot", cmd
     p = Run(cmd, stdout=subprocess.PIPE)
     p.communicate()
     assert p.returncode == 0, "vboot_signer of %s image failed" % path
@@ -409,6 +447,8 @@ def BuildBootableImage(sourcedir, fs_config_file, info_dict=None):
 
   ramdisk_img.close()
   img.close()
+
+  print "BuildBootableImage <-"
 
   return data
 
@@ -1213,7 +1253,7 @@ class BlockDifference(object):
     if progress:
       script.ShowProgress(progress, 0)
     self._WriteUpdate(script, output_zip)
-    self._WritePostInstallVerifyScript(script)
+    #self._WritePostInstallVerifyScript(script)
 
   def WriteVerifyScript(self, script):
     partition = self.partition
