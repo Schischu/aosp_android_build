@@ -422,10 +422,7 @@ def _BuildBootableImage(sourcedir, fs_config_file, info_dict=None,
   if not os.access(os.path.join(sourcedir, "kernel"), os.F_OK):
     return None
 
-  print "BuildBootableImage ->"
-
-  if (not os.access(os.path.join(sourcedir, "RAMDISK"), os.F_OK) or
-      not os.access(os.path.join(sourcedir, "kernel"), os.F_OK)):
+  if has_ramdisk and not os.access(os.path.join(sourcedir, "RAMDISK"), os.F_OK):
     return None
 
   if info_dict is None:
@@ -433,21 +430,8 @@ def _BuildBootableImage(sourcedir, fs_config_file, info_dict=None,
 
   img = tempfile.NamedTemporaryFile()
 
-  if os.access(fs_config_file, os.F_OK):
-    cmd = ["mkbootfs", "-f", fs_config_file, os.path.join(sourcedir, "RAMDISK")]
-  else:
-    cmd = ["mkbootfs", os.path.join(sourcedir, "RAMDISK")]
-  p1 = Run(cmd, stdout=subprocess.PIPE)
-  p2 = Run(["minigzip"],
-           stdin=p1.stdout, stdout=ramdisk_img.file.fileno())
-
-  print "p1", cmd
-  print "p2", " | minigzip > ", ramdisk_img
-
-  p2.wait()
-  p1.wait()
-  assert p1.returncode == 0, "mkbootfs of %s ramdisk failed" % (sourcedir,)
-  assert p2.returncode == 0, "minigzip of %s ramdisk failed" % (sourcedir,)
+  if has_ramdisk:
+    ramdisk_img = make_ramdisk()
 
   # use MKBOOTIMG from environ, or "mkbootimg" if empty or not set
   mkbootimg = os.getenv('MKBOOTIMG') or "mkbootimg"
@@ -1599,11 +1583,18 @@ class BlockDifference(object):
     else:
       code = ErrorCode.VENDOR_UPDATE_FAILURE
 
+#+++
     call = ('block_image_update("{device}", '
             'package_extract_file("{partition}.transfer.list"), '
-            '"{partition}.new.dat", "{partition}.patch.dat") ||\n'
-            '  abort("E{code}: Failed to update {partition} image.");'.format(
+            '"{partition}.new.dat", "{partition}.patch.dat");'.format(
                 device=self.device, partition=self.partition, code=code))
+#===
+#    call = ('block_image_update("{device}", '
+#            'package_extract_file("{partition}.transfer.list"), '
+#            '"{partition}.new.dat", "{partition}.patch.dat") ||\n'
+#            '  abort("E{code}: Failed to update {partition} image.");'.format(
+#                device=self.device, partition=self.partition, code=code))
+#---
     script.AppendExtra(script.WordWrap(call))
 
   def _HashBlocks(self, source, ranges): # pylint: disable=no-self-use
