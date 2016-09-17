@@ -22,13 +22,14 @@ PRODUCT_PACKAGES := \
     BluetoothMidiService \
     Camera2 \
     Gallery2 \
-    Music \
     MusicFX \
     OneTimeInitializer \
     Provision \
     SystemUI \
     EasterEgg \
     WallpaperCropper
+
+#    Music
 
 PRODUCT_PACKAGES += \
     clatd \
