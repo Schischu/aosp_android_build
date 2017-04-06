@@ -204,6 +204,8 @@ LOCAL_SHARED_ANDROID_LIBRARIES:=
 # Used to replace the installed file of a presigned prebuilt apk in PDK fusion build,
 # to avoid installing the presigned apks with classes.dex unstripped.
 LOCAL_REPLACE_PREBUILT_APK_INSTALLED:=
+LOCAL_EXTRACT_APK:=
+LOCAL_EXTRACT_DPI_APK:=
 
 # arch specific variables
 LOCAL_SRC_FILES_$(TARGET_ARCH):=
@@ -361,6 +363,8 @@ LOCAL_CLANG_64:=
 LOCAL_INIT_RC_32:=
 LOCAL_INIT_RC_64:=
 LOCAL_JAVA_LANGUAGE_VERSION:=
+LOCAL_IS_RUNTIME_RESOURCE_OVERLAY:=
+LOCAL_RRO_THEME:=
 
 # Trim MAKEFILE_LIST so that $(call my-dir) doesn't need to
 # iterate over thousands of entries every time.
