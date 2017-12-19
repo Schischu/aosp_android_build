@@ -1186,7 +1186,7 @@ case `uname -s` in
     Darwin)
         function sgrep()
         {
-            find -E . -name .repo -prune -o -name .git -prune -o  -type f -iregex '.*\.(c|h|cc|cpp|S|java|xml|sh|mk|aidl|vts)' \
+            find -E . -name .repo -prune -o -name .git -prune -o -name .org -prune -o  -type f -iregex '.*\.(c|h|cc|cpp|S|java|xml|sh|mk|aidl|vts)' \
                 -exec grep --color -n "$@" {} +
         }
 
@@ -1194,7 +1194,7 @@ case `uname -s` in
     *)
         function sgrep()
         {
-            find . -name .repo -prune -o -name .git -prune -o  -type f -iregex '.*\.\(c\|h\|cc\|cpp\|S\|java\|xml\|sh\|mk\|aidl\|vts\)' \
+            find . -name .repo -prune -o -name .git -prune -o -name .org -prune -o  -type f -iregex '.*\.\(c\|h\|cc\|cpp\|S\|java\|xml\|sh\|mk\|aidl\|vts\)' \
                 -exec grep --color -n "$@" {} +
         }
         ;;
@@ -1207,45 +1207,44 @@ function gettargetarch
 
 function ggrep()
 {
-    find . -name .repo -prune -o -name .git -prune -o -name out -prune -o -type f -name "*\.gradle" \
+    find . -name .repo -prune -o -name .git -prune -o -name .org -prune -o -name out -prune -o -type f -name "*\.gradle" \
         -exec grep --color -n "$@" {} +
 }
 
 function jgrep()
 {
-    find . -name .repo -prune -o -name .git -prune -o -name out -prune -o -type f -name "*\.java" \
+    find . -name .repo -prune -o -name .git -prune -o -name .org -prune -o -name out -prune -o -type f -name "*\.java" \
         -exec grep --color -n "$@" {} +
 }
 
 function cgrep()
 {
-    find . -name .repo -prune -o -name .git -prune -o -name out -prune -o -type f \( -name '*.c' -o -name '*.cc' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' \) \
+    find . -name .repo -prune -o -name .git -prune -o -name .org -prune -o -name out -prune -o -type f \( -name '*.c' -o -name '*.cc' -o -name '*.cpp' -o -name '*.h' \) \
         -exec grep --color -n "$@" {} +
 }
 
 function resgrep()
 {
-    local dir
-    for dir in `find . -name .repo -prune -o -name .git -prune -o -name out -prune -o -name res -type d`; do
+    for dir in `find . -name .repo -prune -o -name .git -prune -o -name .org -prune -o -name out -prune -o -name res -type d`; do
         find $dir -type f -name '*\.xml' -exec grep --color -n "$@" {} +
     done
 }
 
 function mangrep()
 {
-    find . -name .repo -prune -o -name .git -prune -o -path ./out -prune -o -type f -name 'AndroidManifest.xml' \
+    find . -name .repo -prune -o -name .git -prune -o -name .org -prune -o -path ./out -prune -o -type f -name 'AndroidManifest.xml' \
         -exec grep --color -n "$@" {} +
 }
 
 function sepgrep()
 {
-    find . -name .repo -prune -o -name .git -prune -o -path ./out -prune -o -name sepolicy -type d \
+    find . -name .repo -prune -o -name .git -prune -o -name .org -prune -o -path ./out -prune -o -name sepolicy -type d \
         -exec grep --color -n -r --exclude-dir=\.git "$@" {} +
 }
 
 function rcgrep()
 {
-    find . -name .repo -prune -o -name .git -prune -o -name out -prune -o -type f -name "*\.rc*" \
+    find . -name .repo -prune -o -name .git -prune -o -name .org -prune -o -name out -prune -o -type f -name "*\.rc*" \
         -exec grep --color -n "$@" {} +
 }
 
@@ -1253,13 +1252,13 @@ case `uname -s` in
     Darwin)
         function mgrep()
         {
-            find -E . -name .repo -prune -o -name .git -prune -o -path ./out -prune -o \( -iregex '.*/(Makefile|Makefile\..*|.*\.make|.*\.mak|.*\.mk|.*\.bp)' -o -regex '(.*/)?soong/[^/]*.go' \) -type f \
+            find -E . -name .repo -prune -o -name .git -prune -o -name .org -prune -o -path ./out -prune -o -type f -iregex '.*/(Makefile|Makefile\..*|.*\.make|.*\.mak|.*\.mk)' \
                 -exec grep --color -n "$@" {} +
         }
 
         function treegrep()
         {
-            find -E . -name .repo -prune -o -name .git -prune -o -type f -iregex '.*\.(c|h|cpp|S|java|xml)' \
+            find -E . -name .repo -prune -o -name .git -prune -o -name .org -prune -o -type f -iregex '.*\.(c|h|cpp|S|java|xml)' \
                 -exec grep --color -n -i "$@" {} +
         }
 
@@ -1267,13 +1266,13 @@ case `uname -s` in
     *)
         function mgrep()
         {
-            find . -name .repo -prune -o -name .git -prune -o -path ./out -prune -o \( -regextype posix-egrep -iregex '(.*\/Makefile|.*\/Makefile\..*|.*\.make|.*\.mak|.*\.mk|.*\.bp)' -o -regextype posix-extended -regex '(.*/)?soong/[^/]*.go' \) -type f \
+            find . -name .repo -prune -o -name .git -prune -o -name .org -prune -o -path ./out -prune -o -regextype posix-egrep -iregex '(.*\/Makefile|.*\/Makefile\..*|.*\.make|.*\.mak|.*\.mk)' -type f \
                 -exec grep --color -n "$@" {} +
         }
 
         function treegrep()
         {
-            find . -name .repo -prune -o -name .git -prune -o -regextype posix-egrep -iregex '.*\.(c|h|cpp|S|java|xml)' -type f \
+            find . -name .repo -prune -o -name .git -prune -o -name .org -prune -o -regextype posix-egrep -iregex '.*\.(c|h|cpp|S|java|xml)' -type f \
                 -exec grep --color -n -i "$@" {} +
         }
 
